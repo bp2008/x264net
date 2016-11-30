@@ -13,7 +13,9 @@ x264net is a very simple .NET wrapper for the x264 video encoder.  For convenien
 
 ## Requirements
 
-Since this wrapper is written in C++/CLI, you probably need the Visual C++ Redistributable package installed on any machine that is going to use this wrapper.
+Use Visual Studio 2015 to open and build the solution.  The free version is fine.
+
+Since this wrapper is written in C++/CLI using Visual Studio 2015, you probably need the Visual C++ 2015 Redistributable package installed on any machine that is going to use this wrapper.
 
 https://www.microsoft.com/en-us/download/details.aspx?id=53587
 
@@ -47,3 +49,6 @@ using (x264net.X264Net encoder = new x264net.X264Net(width, height))
 	byte[] NALUnits_AllTogether = encoder.EncodeFrameAsWholeArray(rgb_data);
 }
 ```
+## Advanced Usage
+
+At this time, X264Net is a very simplistic wrapper which provides no encoding options.  If (when) you need more control over the encoding parameters, you can easily modify the wrapper to behave differently.
