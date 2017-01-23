@@ -130,7 +130,7 @@ namespace x264net
 	/// <param name="rgb_data">A byte array containing raw RGB data (3 bytes / 24 bits per pixel).  This array's length must be equal to Width * Height * 3.</param>
 	array<array<Byte>^>^ X264Net::EncodeFrame(array<Byte>^ rgb_data)
 	{
-		return (array<array<Byte>^>^)EncodeFrame_Internal(rgb_data, false);
+		return (array<array<Byte>^>^)EncodeFrame_Internal(rgb_data, true);
 	}
 	/// <summary>
 	/// <para>Encodes a frame, returning a single byte array containing one or more H.264 NAL units which are the encoded form of the frame.</para>
@@ -169,6 +169,7 @@ namespace x264net
 				{
 					array<Byte>^ managed_NAL = gcnew array<Byte>(nals[i].i_payload);
 					System::Runtime::InteropServices::Marshal::Copy((IntPtr)nals[i].p_payload, managed_NAL, 0, nals[i].i_payload);
+					managed_NAL_array[i] = managed_NAL;
 				}
 				return managed_NAL_array;
 			}
