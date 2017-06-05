@@ -17,10 +17,10 @@ Windows OS.  I don't know how to make this cross-platform.
 
 Use Visual Studio 2017 to open and build the solution.  The free version is fine.
 
-Since this wrapper is written in C++/CLI using Visual Studio 2017, you probably need the Visual C++ 2017 Redistributable package installed on any machine that is going to use this wrapper.
+This wrapper is written in C++/CLI using Visual Studio 2017, so there are dependencies on `msvcp140.dll` and `vcruntime140.dll`.  Normally this means you must install a Visual C++ 2017 Redistributable package (or Visual Studio itself) on any machine that is going to use this wrapper.  However for convenience, I have included the required dll files in the repository and configured the project build events to copy the dll files to the appropriate output directories. Because of this, it should no longer be necessary to install a Visual C++ 2017 Redistributable package.
 
-32 bit: https://go.microsoft.com/fwlink/?LinkId=746571  
-64 bit: https://go.microsoft.com/fwlink/?LinkId=746572
+~~32 bit: https://go.microsoft.com/fwlink/?LinkId=746571~~  
+~~64 bit: https://go.microsoft.com/fwlink/?LinkId=746572~~
 
 ## Usage
 
