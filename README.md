@@ -15,11 +15,12 @@ x264net is a very simple .NET wrapper for the x264 video encoder.  For convenien
 
 Windows OS.  I don't know how to make this cross-platform.
 
-Use Visual Studio 2015 to open and build the solution.  The free version is fine.
+Use Visual Studio 2017 to open and build the solution.  The free version is fine.
 
-Since this wrapper is written in C++/CLI using Visual Studio 2015, you probably need the Visual C++ 2015 Redistributable package installed on any machine that is going to use this wrapper.
+Since this wrapper is written in C++/CLI using Visual Studio 2017, you probably need the Visual C++ 2017 Redistributable package installed on any machine that is going to use this wrapper.
 
-https://www.microsoft.com/en-us/download/details.aspx?id=53587
+32 bit: https://go.microsoft.com/fwlink/?LinkId=746571  
+64 bit: https://go.microsoft.com/fwlink/?LinkId=746572
 
 ## Usage
 
