@@ -34,9 +34,10 @@ The following C# code demonstrates basic usage of the wrapper.  A complete examp
 // You should choose image dimensions that are divisible by 16, if you can.
 const int width = 1280;
 const int height = 720;
+x264net.X264Options options = new x264net.X264Options(width, height);
 
 // Make sure you call Dispose() on the encoder when finished, or use a "using" block like this
-using (x264net.X264Net encoder = new x264net.X264Net(width, height))
+using (x264net.X264Net encoder = new x264net.X264Net(options))
 {
 	// X264Net needs to be fed raw RGB data in the form of a byte array.
 	byte[] rgb_data = new byte[width * height * 3];
