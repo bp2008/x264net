@@ -20,37 +20,37 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{26AABCC4-4BE8-4777-89ED-C6132383CD03}</ProjectGuid>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>x264net</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -74,15 +74,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)-$(PlatformTarget)\</OutDir>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)-$(PlatformTarget)\</OutDir>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)-$(PlatformTarget)\</OutDir>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)-$(PlatformTarget)\</OutDir>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,8 +105,8 @@
       <AdditionalLibraryDirectories>$(ProjectDir)lib\x264\$(Configuration)-$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)lib\msvc\msvcp140.dll" "$(TargetDir)msvcp140.dll"
-copy "$(ProjectDir)lib\msvc\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Command>
+      <Command>copy "$(ProjectDir)lib\msvc\$(PlatformTarget)\msvcp140.dll" "$(TargetDir)msvcp140.dll"
+copy "$(ProjectDir)lib\msvc\$(PlatformTarget)\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,8 +122,8 @@ copy "$(ProjectDir)lib\msvc\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Co
       <AdditionalLibraryDirectories>$(ProjectDir)lib\x264\$(Configuration)-$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)lib\msvc\msvcp140.dll" "$(TargetDir)msvcp140.dll"
-copy "$(ProjectDir)lib\msvc\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Command>
+      <Command>copy "$(ProjectDir)lib\msvc\$(PlatformTarget)\msvcp140.dll" "$(TargetDir)msvcp140.dll"
+copy "$(ProjectDir)lib\msvc\$(PlatformTarget)\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,8 +138,8 @@ copy "$(ProjectDir)lib\msvc\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Co
       <AdditionalLibraryDirectories>$(ProjectDir)lib\x264\$(Configuration)-$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)lib\msvc\msvcp140.dll" "$(TargetDir)msvcp140.dll"
-copy "$(ProjectDir)lib\msvc\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Command>
+      <Command>copy "$(ProjectDir)lib\msvc\$(PlatformTarget)\msvcp140.dll" "$(TargetDir)msvcp140.dll"
+copy "$(ProjectDir)lib\msvc\$(PlatformTarget)\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,8 +154,8 @@ copy "$(ProjectDir)lib\msvc\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Co
       <AdditionalLibraryDirectories>$(ProjectDir)lib\x264\$(Configuration)-$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)lib\msvc\msvcp140.dll" "$(TargetDir)msvcp140.dll"
-copy "$(ProjectDir)lib\msvc\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Command>
+      <Command>copy "$(ProjectDir)lib\msvc\$(PlatformTarget)\msvcp140.dll" "$(TargetDir)msvcp140.dll"
+copy "$(ProjectDir)lib\msvc\$(PlatformTarget)\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -162,6 +170,7 @@ copy "$(ProjectDir)lib\msvc\vcruntime140.dll" "$(TargetDir)vcruntime140.dll"</Co
     <ClInclude Include="RGB_To_YUV420.h" />
     <ClInclude Include="stringconvert.h" />
     <ClInclude Include="x264net.h" />
+    <ClInclude Include="X264Options.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stringconvert.cpp" />

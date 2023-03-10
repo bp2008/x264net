@@ -6,24 +6,12 @@
 namespace x264net
 {
 	/// <summary>
-	/// <para>Create an X264Net compressor instance that accepts RGB data frames of a particular size.  Uses 1 thread for encoding unless otherwise specified.</para>
+	/// <para>Create an X264Net compressor instance that accepts RGB data frames of a particular size.</para>
 	/// <para>This instance must be disposed when you are finished with it (Call the Dispose() method, or use a C# "using" block).</para>
 	/// <para>For best results, use dimensions that are divisible by 16. Otherwise, the encoder may scale your content to a different output resolution, and you may experience padding issues.</para>
 	/// </summary>
-	/// <param name="widthPx">The width, in pixels, of the input images.</param>
-	/// <param name="heightPx">The height, in pixels, of the input images.</param>
-	X264Net::X264Net(int widthPx, int heightPx) : Width(widthPx), Height(heightPx), Threads(1)
-	{
-		Initialize();
-	}
-	/// <summary>
-	/// <para>Create an X264Net compressor instance that accepts RGB data frames of a particular size.</para>
-	/// <para>This instance must be disposed when you are finished with it (Call the Dispose() method, or use a C# "using" block).</para>
-	/// </summary>
-	/// <param name="widthPx">The width, in pixels, of the input images.</param>
-	/// <param name="heightPx">The height, in pixels, of the input images.</param>
-	/// <param name="threads">The number of threads to use for encoding (default: 1).</param>
-	X264Net::X264Net(int widthPx, int heightPx, int threads) : Width(widthPx), Height(heightPx), Threads(threads)
+	/// <param name="options">The encoding options to use.</param>
+	X264Net::X264Net(X264Options^ options) : Options(options)
 	{
 		Initialize();
 	}
@@ -32,15 +20,26 @@ namespace x264net
 		isDisposed = false;
 		try
 		{
-			if(Width % 2 != 0 || Height % 2 != 0)
-				throw gcnew Exception("Each dimension must be an even number. Provided dimensions: " + Width + " x " + Height);
+			if (Options->Width % 2 != 0 || Options->Height % 2 != 0)
+				throw gcnew Exception("Each dimension must be an even number. Provided dimensions: " + Options->Width + " x " + Options->Height);
+			if (Options->Threads < 1)
+				Options->Threads = 1;
+			if (Options->Threads > System::Environment::ProcessorCount * 2)
+				Options->Threads = System::Environment::ProcessorCount * 2;
 			frame = 0;
 			// int stride = Width * 3;
 			int fps = 1;
+
 			int colorSpace = X264_CSP_I420;
+			//if (Options->Colorspace == X264Colorspace::I420)
+			//	colorSpace = X264_CSP_I420;
+			//else if (Options->Colorspace == X264Colorspace::I422)
+			//	colorSpace = X264_CSP_I422;
+			//else if (Options->Colorspace == X264Colorspace::I444)
+			//	colorSpace = X264_CSP_I444;
 
 			pic_in = new x264_picture_t();
-			int success = x264_picture_alloc(pic_in, colorSpace, Width, Height);
+			int success = x264_picture_alloc(pic_in, colorSpace, Options->Width, Options->Height);
 			if (success != 0)
 				throw gcnew Exception("x264_picture_alloc failed with code " + success);
 
@@ -48,32 +47,49 @@ namespace x264net
 
 			param = new x264_param_t();
 
-			// Use fastest preset, tuned for minimal latency
-			x264_param_default_preset(param, "ultrafast", "zerolatency");
+			x264_param_default_preset(param, getStdString(Options->Preset.ToString()).c_str(), getStdString(Options->Tune.ToString()).c_str());
 
 			param->i_csp = colorSpace;
-			param->i_threads = Threads;
-			param->i_width = Width;
-			param->i_height = Height;
-			param->i_fps_num = fps; // Frame rate has some effect on image quality ...
-			param->i_fps_den = 10;
+			param->i_threads = Options->Threads;
+			param->i_width = Options->Width;
+			param->i_height = Options->Height;
+			param->i_fps_num = Options->FPS; // Frame rate has some effect on image quality ...
+			param->i_fps_den = 1;
 
 			// Intra refresh:
-			param->i_keyint_max = fps;
-			param->b_intra_refresh = 1;
+			param->i_keyint_max = Options->IframeInterval;
+			param->b_intra_refresh = Options->IntraRefresh ? 1 : 0;
 
 			//Rate control:
-			//param.rc.i_bitrate = 4000;
-			param->rc.i_rc_method = X264_RC_CRF;
-			param->rc.f_rf_constant = 25;
-			param->rc.f_rf_constant_max = 35;
+			if (Options->MaxBitRate > 0)
+				param->rc.i_vbv_max_bitrate = Options->MaxBitRate;
+			if (Options->BitRateSmoothOverSeconds < 0.001)
+				Options->BitRateSmoothOverSeconds = 0.001;
+			if (Options->BitRateSmoothOverSeconds > 10)
+				Options->BitRateSmoothOverSeconds = 10;
+			param->rc.i_vbv_buffer_size = (int)(Options->MaxBitRate * Options->BitRateSmoothOverSeconds);
+			if (Options->ConstantBitRate)
+			{
+				param->rc.i_rc_method = X264_RC_ABR;
+				if (Options->MaxBitRate > 0)
+					param->rc.i_bitrate = Options->MaxBitRate;
+				else
+					throw gcnew Exception("No MaxBitRate value was specified when using ConstantBitRate encoding");
+			}
+			else
+			{
+				param->rc.i_rc_method = X264_RC_CRF;
+				param->rc.f_rf_constant = Options->Quality;
+				if (Options->QualityMinimum > -1)
+					param->rc.f_rf_constant_max = Options->QualityMinimum;
+			}
 
 			//For streaming:
 			param->b_repeat_headers = 1;
 			param->b_annexb = 1;
 
 			// Enforce baseline profile
-			x264_param_apply_profile(param, "baseline");
+			x264_param_apply_profile(param, getStdString(Options->Profile.ToString()).c_str());
 
 			// Open Encoder
 			encoder = x264_encoder_open(param);
@@ -142,8 +158,8 @@ namespace x264net
 	}
 	Object^ X264Net::EncodeFrame_Internal(array<Byte>^ rgb_data, bool eachNalGetsOwnArray)
 	{
-		if (rgb_data->Length != Width * Height * 3)
-			throw gcnew ArgumentException("Input image data has size " + rgb_data->Length + " but the expected size is " + (Width * Height * 3) + " (" + Width + " * " + Height + " * 3)", "rgb_data");
+		if (rgb_data->Length != Options->Width * Options->Height * 3)
+			throw gcnew ArgumentException("Input image data has size " + rgb_data->Length + " but the expected size is " + (Options->Width * Options->Height * 3) + " (" + Options->Width + " * " + Options->Height + " * 3)", "rgb_data");
 
 		// increment presentation timestamp; just because.
 		pic_in->i_pts = frame++;
@@ -152,7 +168,7 @@ namespace x264net
 		{
 			// When pinned_rgb_data goes out of scope, the managed array is unpinned.
 			pin_ptr<Byte> pinned_rgb_data = &rgb_data[0];
-			Bitmap2Yuv420p_calc2(pic_in->img.plane[0], pinned_rgb_data, Width, Height);
+			Bitmap2Yuv420p_calc2(pic_in->img.plane[0], pinned_rgb_data, Options->Width, Options->Height);
 		}
 
 		// Encode frame

@@ -19,6 +19,7 @@ namespace TestX264Net
 			// For best results, the width and height should both be divisible by 16. (important note: 1080 is not divisible by 16)
 			const int width = 320;
 			const int height = 192;
+			x264net.X264Options options = new x264net.X264Options(width, height);
 
 			// The number of frames to generate and encode
 			const int framesToGenerate = 100;
@@ -29,7 +30,7 @@ namespace TestX264Net
 			using (FileStream fsOut = new FileStream("out.h264", FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
 				// Create an X264Net instance. Be sure to dispose it when finished, either by calling Dispose() on it, or by creating it in a using block.
-				using (x264net.X264Net encoder = new x264net.X264Net(width, height))
+				using (x264net.X264Net encoder = new x264net.X264Net(options))
 				{
 					for (int frame = 0; frame < framesToGenerate; frame++)
 					{

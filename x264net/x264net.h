@@ -3,6 +3,7 @@
 #pragma once
 #include "stdint.h"
 #include "lib/x264/include/x264.h"
+#include "X264Options.h"
 
 using namespace System;
 
@@ -25,12 +26,9 @@ namespace x264net {
 		void Initialize();
 		Object^ EncodeFrame_Internal(array<Byte>^ rgb_data, bool eachNalGetsOwnArray);
 	public:
-		initonly int Width;
-		initonly int Height;
-		initonly int Threads;
+		X264Options^ Options;
 
-		X264Net(int widthPx, int heightPx);
-		X264Net(int widthPx, int heightPx, int threads);
+		X264Net(X264Options^ options);
 		~X264Net();
 		array<array<Byte>^>^ EncodeFrame(array<Byte>^ rgb_data);
 		array<Byte>^ EncodeFrameAsWholeArray(array<Byte>^ rgb_data);
